@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications - Kianoosh Vadaei</title>
+    <meta name="description" content="Research publications by Kianoosh Vadaei in AI, NLP, Computer Vision, and Machine Learning.">
+    <meta name="keywords" content="Kianoosh Vadaei, publications, research papers, AI, NLP, Computer Vision, RAG, VideoRAG">
+    <meta name="author" content="Kianoosh Vadaei">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kia-vadaei.github.io/publications.html">
+    <meta property="og:title" content="Publications - Kianoosh Vadaei">
+    <meta property="og:description" content="Research publications by Kianoosh Vadaei in AI, NLP, Computer Vision, and Machine Learning.">
+    <meta property="og:image" content="https://kia-vadaei.github.io/assets/img/avatar.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kia-vadaei.github.io/publications.html">
+    <meta property="twitter:title" content="Publications - Kianoosh Vadaei">
+    <meta property="twitter:description" content="Research publications by Kianoosh Vadaei in AI, NLP, Computer Vision, and Machine Learning.">
+    <meta property="twitter:image" content="https://kia-vadaei.github.io/assets/img/avatar.jpg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://kia-vadaei.github.io/publications.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../logo.png">
+    <link rel="shortcut icon" type="image/png" href="../logo.png">
+    <link rel="apple-touch-icon" href="../logo.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    
+    <!-- Additional styles for publications page -->
+    <style>
+        .publications-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .publications-filters {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+        
+        .publications-search {
+            max-width: 400px;
+            margin: 0 auto var(--space-xl);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            font-family: inherit;
+            width: 100%;
+        }
+        
+        .publications-search:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--shadow);
+        }
+        
+        .publications-search::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .publication-card {
+            transition: var(--transition);
+        }
+        
+        .publication-card.hidden {
+            display: none;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: var(--space-2xl);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        .back-to-home {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .publication-meta {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
+            flex-wrap: wrap;
+        }
+        
+        .publication-year {
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .publication-type {
+            background: var(--bg-primary);
+            color: var(--text-muted);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">Kianoosh Vadaei</a>
+            <ul class="nav__list">
+                <li><a href="index.html#about" class="nav__link">About</a></li>
+                <li><a href="index.html#research" class="nav__link">Research</a></li>
+                <li><a href="publications.html" class="nav__link">Publications</a></li>
+                <li><a href="index.html#skills" class="nav__link">Skills</a></li>
+                <li><a href="index.html#experience" class="nav__link">Experience</a></li>
+                <li><a href="index.html#contact" class="nav__link">Contact</a></li>
+                <li><a href="index.html#cv" class="nav__link">CV</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="Toggle theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main">
+        <section class="section">
+            <div class="container">
+                <div class="back-to-home">
+                    <a href="index.html" class="btn btn--secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+                
+                <div class="publications-header">
+                    <h1>Publications</h1>
+                    <p class="text-muted">Research papers and publications in AI, NLP, and Computer Vision</p>
+                </div>
+
+                <!-- Search and Filters -->
+                <input type="text" class="publications-search" placeholder="Search publications by title, authors, or keywords...">
+                
+                <div class="publications-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="nlp">NLP</button>
+                    <button class="filter-btn" data-filter="vision">Computer Vision</button>
+                    <button class="filter-btn" data-filter="rag">RAG</button>
+                    <button class="filter-btn" data-filter="multimodal">Multimodal</button>
+                    <button class="filter-btn" data-filter="2024">2024</button>
+                    <button class="filter-btn" data-filter="2025">2025</button>
+                </div>
+
+                <!-- Publications Grid -->
+                <div class="publications__grid">
+                    <article class="publication-card" data-category="nlp rag multimodal" data-year="2025">
+                        <img src="assets/img/pub-videorag.png" alt="VideoRAG Pipeline Diagram" class="publication__image">
+                        <div class="publication__content">
+                            <div class="publication-meta">
+                                <span class="publication-year">2025</span>
+                                <span class="publication-type">Conference</span>
+                            </div>
+                            <h3 class="publication__title">Adaptive Chunking for VideoRAG Pipelines with a Newly Gathered Bilingual Educational Dataset</h3>
+                            <div class="publication__venue">CSICC 2025 (29th International Computer Conference, Computer Society of Iran), Tehran</div>
+                            <div class="publication__authors">Arshia Hemmat, <strong>Kianoosh Vadaei</strong>, Melika Shirian, Mohammad Hassan Heydari, Afsaneh Fatemi</div>
+                            <p class="publication__abstract">
+                                This paper presents an adaptive chunking strategy for VideoRAG pipelines using a newly collected 
+                                bilingual educational dataset. We demonstrate improved performance in video question answering 
+                                through optimized temporal segmentation techniques. Our approach addresses the challenge of 
+                                effectively processing long-form educational videos by implementing dynamic chunking based on 
+                                content complexity and semantic boundaries.
+                            </p>
+                            <div class="project__badges">
+                                <span class="badge">VideoQA</span>
+                                <span class="badge">RAG</span>
+                                <span class="badge">Multimodal</span>
+                                <span class="badge">Educational AI</span>
+                                <a href="#" class="badge" style="background: var(--accent); color: var(--bg-primary);">Dataset: EduViQA</a>
+                            </div>
+                            <div class="publication__actions">
+                                <a href="papers/videorag-adaptive-chunking.html" class="btn btn--secondary">Read More</a>
+                                <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">PDF</a>
+                                <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">BibTeX</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="publication-card" data-category="nlp rag" data-year="2024">
+                        <img src="assets/img/pub-rag-persian.png" alt="Persian RAG System Diagram" class="publication__image">
+                        <div class="publication__content">
+                            <div class="publication-meta">
+                                <span class="publication-year">2024</span>
+                                <span class="publication-type">Preprint</span>
+                            </div>
+                            <h3 class="publication__title">Leveraging Retrieval-Augmented Generation for Persian University Knowledge Retrieval</h3>
+                            <div class="publication__venue">arXiv:2411.06237v2 (2024)</div>
+                            <div class="publication__authors">Arshia Hemmat, <strong>Kianoosh Vadaei</strong>, Mohammad Hassan Heydari, Afsaneh Fatemi</div>
+                            <p class="publication__abstract">
+                                We introduce a novel approach to Persian knowledge retrieval using RAG techniques, 
+                                specifically designed for university-level educational content. Our system demonstrates 
+                                significant improvements in accuracy and relevance for Persian language queries. The work 
+                                addresses the unique challenges of Persian text processing and provides a comprehensive 
+                                framework for educational knowledge retrieval in low-resource language settings.
+                            </p>
+                            <div class="project__badges">
+                                <span class="badge">RAG</span>
+                                <span class="badge">Persian LLMs</span>
+                                <span class="badge">Knowledge Retrieval</span>
+                                <span class="badge">Educational AI</span>
+                                <a href="#" class="badge" style="background: var(--accent); color: var(--bg-primary);">Dataset: UQB</a>
+                            </div>
+                            <div class="publication__actions">
+                                <a href="papers/rag-persian-knowledge-retrieval.html" class="btn btn--secondary">Read More</a>
+                                <a href="https://arxiv.org/abs/2411.06237" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">PDF</a>
+                                <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">BibTeX</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Placeholder for future publications -->
+                    <article class="publication-card" data-category="nlp" data-year="2024" style="opacity: 0.6;">
+                        <div class="publication__image" style="background: var(--bg-primary); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14,2 14,8 20,8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10,9 9,9 8,9"/>
+                            </svg>
+                        </div>
+                        <div class="publication__content">
+                            <div class="publication-meta">
+                                <span class="publication-year">2024</span>
+                                <span class="publication-type">Under Review</span>
+                            </div>
+                            <h3 class="publication__title">Self-Supervised Learning Approaches for Persian Text Understanding</h3>
+                            <div class="publication__venue">Under Review</div>
+                            <div class="publication__authors"><strong>Kianoosh Vadaei</strong>, et al.</div>
+                            <p class="publication__abstract">
+                                This work explores novel self-supervised learning techniques specifically designed for Persian 
+                                text understanding, addressing the unique linguistic characteristics and challenges of Persian 
+                                language processing in low-resource settings.
+                            </p>
+                            <div class="project__badges">
+                                <span class="badge">Self-Supervised Learning</span>
+                                <span class="badge">Persian NLP</span>
+                                <span class="badge">Text Understanding</span>
+                            </div>
+                            <div class="publication__actions">
+                                <button class="btn btn--secondary" disabled>Coming Soon</button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="no-results hidden">
+                    <h3>No publications found</h3>
+                    <p>Try adjusting your search terms or filters.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <p>&copy; 2025 Kianoosh Vadaei. All rights reserved.</p>
+                <div style="display: flex; align-items: center; gap: var(--space-md);">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </button>
+                    <a href="https://github.com/kia-vadaei/kia-vadaei.github.io" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); font-size: 0.9rem;">
+                        View Source
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

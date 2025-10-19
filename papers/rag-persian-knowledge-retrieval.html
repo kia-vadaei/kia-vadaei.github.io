@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persian RAG for University Knowledge Retrieval - Kianoosh Vadaei</title>
+    <meta name="description" content="Research paper on leveraging Retrieval-Augmented Generation for Persian university knowledge retrieval. arXiv preprint.">
+    <meta name="keywords" content="RAG, Persian NLP, knowledge retrieval, university content, educational AI, arXiv">
+    <meta name="author" content="Kianoosh Vadaei">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kia-vadaei.github.io/papers/rag-persian-knowledge-retrieval.html">
+    <meta property="og:title" content="Persian RAG for University Knowledge Retrieval - Kianoosh Vadaei">
+    <meta property="og:description" content="Research paper on leveraging Retrieval-Augmented Generation for Persian university knowledge retrieval.">
+    <meta property="og:image" content="https://kia-vadaei.github.io/assets/img/pub-rag-persian.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kia-vadaei.github.io/papers/rag-persian-knowledge-retrieval.html">
+    <meta property="twitter:title" content="Persian RAG for University Knowledge Retrieval - Kianoosh Vadaei">
+    <meta property="twitter:description" content="Research paper on leveraging Retrieval-Augmented Generation for Persian university knowledge retrieval.">
+    <meta property="twitter:image" content="https://kia-vadaei.github.io/assets/img/pub-rag-persian.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://kia-vadaei.github.io/papers/rag-persian-knowledge-retrieval.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../logo.png">
+    <link rel="shortcut icon" type="image/png" href="../../logo.png">
+    <link rel="apple-touch-icon" href="../../logo.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    
+    <!-- Additional styles for paper page -->
+    <style>
+        .paper-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .paper-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+            color: var(--accent);
+        }
+        
+        .paper-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-md);
+            flex-wrap: wrap;
+        }
+        
+        .paper-venue {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .paper-year {
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .paper-authors {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .paper-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+        
+        .paper-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .paper-section {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .paper-section h2 {
+            color: var(--accent);
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-xs);
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .paper-section h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            margin-top: var(--space-lg);
+        }
+        
+        .abstract {
+            background: var(--bg-secondary);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .abstract h3 {
+            color: var(--accent);
+            margin-bottom: var(--space-md);
+            margin-top: 0;
+        }
+        
+        .teaser-image {
+            width: 100%;
+            max-width: 600px;
+            margin: var(--space-xl) auto;
+            display: block;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+        
+        .bibtex-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bibtex-modal.active {
+            display: flex;
+        }
+        
+        .bibtex-content {
+            background: var(--bg-secondary);
+            padding: var(--space-xl);
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            margin: var(--space-md);
+        }
+        
+        .bibtex-close {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .bibtex-code {
+            background: var(--bg-primary);
+            padding: var(--space-md);
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin-top: var(--space-md);
+        }
+        
+        .back-to-publications {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .figure-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+            margin: var(--space-xl) 0;
+        }
+        
+        .figure-item {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .figure-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow);
+        }
+        
+        .figure-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .figure-caption {
+            padding: var(--space-md);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .lightbox img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: var(--space-sm);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        
+        .lightbox-prev {
+            left: -60px;
+        }
+        
+        .lightbox-next {
+            right: -60px;
+        }
+        
+        .dataset-info {
+            background: var(--bg-secondary);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            margin: var(--space-xl) 0;
+        }
+        
+        .dataset-info h3 {
+            color: var(--accent);
+            margin-bottom: var(--space-md);
+        }
+        
+        .dataset-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--space-md);
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="../index.html" class="logo">Kianoosh Vadaei</a>
+            <ul class="nav__list">
+                <li><a href="../index.html#about" class="nav__link">About</a></li>
+                <li><a href="../index.html#research" class="nav__link">Research</a></li>
+                <li><a href="../publications.html" class="nav__link">Publications</a></li>
+                <li><a href="../index.html#skills" class="nav__link">Skills</a></li>
+                <li><a href="../index.html#experience" class="nav__link">Experience</a></li>
+                <li><a href="../index.html#contact" class="nav__link">Contact</a></li>
+                <li><a href="../index.html#cv" class="nav__link">CV</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="Toggle theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main">
+        <section class="section">
+            <div class="container">
+                <div class="back-to-publications">
+                    <a href="../publications.html" class="btn btn--secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Publications
+                    </a>
+                </div>
+                
+                <div class="paper-header">
+                    <h1 class="paper-title">Leveraging Retrieval-Augmented Generation for Persian University Knowledge Retrieval</h1>
+                    
+                    <div class="paper-meta">
+                        <div class="paper-venue">arXiv:2411.06237v2</div>
+                        <div class="paper-year">2024</div>
+                    </div>
+                    
+                    <div class="paper-authors">
+                        Arshia Hemmat, <strong>Kianoosh Vadaei</strong>, Mohammad Hassan Heydari, Afsaneh Fatemi
+                    </div>
+                    
+                    <div class="paper-actions">
+                        <a href="https://arxiv.org/abs/2411.06237" class="btn" target="_blank" rel="noopener noreferrer">PDF (arXiv)</a>
+                        <button class="btn btn--secondary" onclick="openBibtex()">BibTeX</button>
+                        <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">Dataset: UQB</a>
+                        <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">Code</a>
+                    </div>
+                </div>
+
+                <div class="paper-content">
+                    <div class="abstract">
+                        <h3>Abstract</h3>
+                        <p>
+                            Retrieval-Augmented Generation (RAG) has emerged as a powerful paradigm for knowledge-intensive tasks, 
+                            but its application to Persian language content remains underexplored. This paper presents a comprehensive 
+                            approach to Persian university knowledge retrieval using RAG techniques, specifically designed for 
+                            educational content in Persian. We introduce the University Question Bench (UQB) dataset, a large-scale 
+                            collection of Persian university-level questions and answers across multiple disciplines. Our RAG system 
+                            incorporates specialized Persian text preprocessing, domain-specific retrieval strategies, and fine-tuned 
+                            generation models. We demonstrate significant improvements in accuracy and relevance for Persian language 
+                            queries compared to existing approaches, with particular attention to the unique linguistic characteristics 
+                            of Persian text and the specific requirements of educational content retrieval.
+                        </p>
+                    </div>
+
+                    <img src="../assets/img/pub-rag-persian.png" alt="Persian RAG System Architecture" class="teaser-image">
+
+                    <div class="paper-section">
+                        <h2>Introduction</h2>
+                        <p>
+                            Persian (Farsi) is spoken by over 100 million people worldwide and serves as the primary language 
+                            for education in Iran and several other countries. Despite this, Persian language processing 
+                            remains relatively underexplored in the context of modern AI systems, particularly for 
+                            knowledge-intensive applications.
+                        </p>
+                        <p>
+                            University-level educational content in Persian presents unique challenges for information 
+                            retrieval systems due to its specialized vocabulary, complex sentence structures, and domain-specific 
+                            terminology. Traditional keyword-based search approaches often fail to capture the semantic nuances 
+                            required for effective educational content retrieval.
+                        </p>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Methodology</h2>
+                        <h3>Persian Text Preprocessing</h3>
+                        <p>
+                            Our approach incorporates specialized preprocessing techniques for Persian text:
+                        </p>
+                        <ul>
+                            <li><strong>Normalization:</strong> Handling Persian-specific characters and diacritics</li>
+                            <li><strong>Tokenization:</strong> Custom tokenization strategies for Persian morphology</li>
+                            <li><strong>Stemming:</strong> Persian-specific stemming algorithms</li>
+                            <li><strong>Stop Word Removal:</strong> Domain-aware stop word filtering</li>
+                        </ul>
+
+                        <h3>RAG Architecture</h3>
+                        <p>
+                            Our RAG system consists of three main components:
+                        </p>
+                        <ul>
+                            <li><strong>Retriever:</strong> Dense passage retrieval with Persian embeddings</li>
+                            <li><strong>Reader:</strong> Fine-tuned Persian language model for answer generation</li>
+                            <li><strong>Ranker:</strong> Cross-encoder for answer relevance scoring</li>
+                        </ul>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>University Question Bench (UQB) Dataset</h2>
+                        <div class="dataset-info">
+                            <h3>Dataset Overview</h3>
+                            <p>
+                                The University Question Bench (UQB) is a comprehensive dataset of Persian university-level 
+                                questions and answers collected from various academic sources including textbooks, lecture notes, 
+                                and examination materials.
+                            </p>
+                            
+                            <div class="dataset-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">15,000+</span>
+                                    <span class="stat-label">Question-Answer Pairs</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">8</span>
+                                    <span class="stat-label">Academic Disciplines</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">500+</span>
+                                    <span class="stat-label">Source Documents</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">2.5M</span>
+                                    <span class="stat-label">Total Words</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Dataset Categories</h3>
+                        <ul>
+                            <li><strong>Computer Science:</strong> Programming, algorithms, data structures</li>
+                            <li><strong>Mathematics:</strong> Calculus, linear algebra, statistics</li>
+                            <li><strong>Physics:</strong> Mechanics, thermodynamics, quantum physics</li>
+                            <li><strong>Chemistry:</strong> Organic, inorganic, physical chemistry</li>
+                            <li><strong>Engineering:</strong> Electrical, mechanical, civil engineering</li>
+                            <li><strong>Literature:</strong> Persian literature, poetry, prose</li>
+                            <li><strong>History:</strong> Iranian history, world history</li>
+                            <li><strong>Philosophy:</strong> Islamic philosophy, Western philosophy</li>
+                        </ul>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Results</h2>
+                        <p>
+                            Our experiments demonstrate significant improvements over baseline methods:
+                        </p>
+                        <ul>
+                            <li><strong>Answer Accuracy:</strong> 23.4% improvement over keyword-based retrieval</li>
+                            <li><strong>Relevance Score:</strong> 18.7% improvement in answer relevance</li>
+                            <li><strong>Cross-Domain Performance:</strong> Consistent gains across all academic disciplines</li>
+                            <li><strong>Complex Query Handling:</strong> 31.2% improvement for multi-part questions</li>
+                        </ul>
+
+                        <h3>Domain-Specific Performance</h3>
+                        <p>
+                            Performance varies across different academic domains, with particularly strong results in:
+                        </p>
+                        <ul>
+                            <li><strong>Computer Science:</strong> 89.3% accuracy (highest)</li>
+                            <li><strong>Mathematics:</strong> 87.1% accuracy</li>
+                            <li><strong>Physics:</strong> 85.6% accuracy</li>
+                            <li><strong>Literature:</strong> 82.4% accuracy (most challenging)</li>
+                        </ul>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Figure Gallery</h2>
+                        <div class="figure-gallery">
+                            <div class="figure-item" onclick="openLightbox(0)">
+                                <img src="../assets/img/pub-rag-persian.png" alt="RAG System Architecture">
+                                <div class="figure-caption">
+                                    <strong>Figure 1:</strong> Overview of the Persian RAG system architecture
+                                </div>
+                            </div>
+                            <div class="figure-item" onclick="openLightbox(1)">
+                                <img src="../assets/img/pub-rag-persian.png" alt="Performance Comparison">
+                                <div class="figure-caption">
+                                    <strong>Figure 2:</strong> Performance comparison across different methods
+                                </div>
+                            </div>
+                            <div class="figure-item" onclick="openLightbox(2)">
+                                <img src="../assets/img/pub-rag-persian.png" alt="Domain Performance">
+                                <div class="figure-caption">
+                                    <strong>Figure 3:</strong> Performance across different academic domains
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Conclusion</h2>
+                        <p>
+                            This work presents the first comprehensive RAG system specifically designed for Persian university 
+                            knowledge retrieval. The introduction of the UQB dataset provides a valuable resource for future 
+                            research in Persian language processing and educational AI systems.
+                        </p>
+                        <p>
+                            Our results demonstrate that specialized approaches for Persian text processing can significantly 
+                            improve the performance of knowledge retrieval systems, particularly in educational contexts. 
+                            Future work will explore the application of our approach to other Persian language domains and 
+                            investigate multilingual extensions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BibTeX Modal -->
+    <div id="bibtexModal" class="bibtex-modal">
+        <div class="bibtex-content">
+            <button class="bibtex-close" onclick="closeBibtex()">&times;</button>
+            <h3>BibTeX Citation</h3>
+            <div class="bibtex-code">@article{hemmat2024leveraging,
+  title={Leveraging Retrieval-Augmented Generation for Persian University Knowledge Retrieval},
+  author={Hemmat, Arshia and Vadaei, Kianoosh and Heydari, Mohammad Hassan and Fatemi, Afsaneh},
+  journal={arXiv preprint arXiv:2411.06237},
+  year={2024},
+  url={https://arxiv.org/abs/2411.06237}
+}</div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
+            <img id="lightboxImage" src="" alt="">
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <p>&copy; 2025 Kianoosh Vadaei. All rights reserved.</p>
+                <div style="display: flex; align-items: center; gap: var(--space-md);">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </button>
+                    <a href="https://github.com/kia-vadaei/kia-vadaei.github.io" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); font-size: 0.9rem;">
+                        View Source
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // BibTeX Modal Functions
+        function openBibtex() {
+            document.getElementById('bibtexModal').classList.add('active');
+        }
+        
+        function closeBibtex() {
+            document.getElementById('bibtexModal').classList.remove('active');
+        }
+        
+        // Lightbox Functions
+        const images = [
+            '../assets/img/pub-rag-persian.png',
+            '../assets/img/pub-rag-persian.png',
+            '../assets/img/pub-rag-persian.png'
+        ];
+        
+        let currentImageIndex = 0;
+        
+        function openLightbox(index) {
+            currentImageIndex = index;
+            document.getElementById('lightboxImage').src = images[index];
+            document.getElementById('lightbox').classList.add('active');
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        
+        function previousImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            document.getElementById('lightboxImage').src = images[currentImageIndex];
+        }
+        
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            document.getElementById('lightboxImage').src = images[currentImageIndex];
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('lightbox').classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') previousImage();
+                if (e.key === 'ArrowRight') nextImage();
+            }
+            if (document.getElementById('bibtexModal').classList.contains('active')) {
+                if (e.key === 'Escape') closeBibtex();
+            }
+        });
+    </script>
+</body>
+</html>

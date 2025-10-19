@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Chunking for VideoRAG Pipelines - Kianoosh Vadaei</title>
+    <meta name="description" content="Research paper on adaptive chunking strategies for VideoRAG pipelines using bilingual educational datasets. CSICC 2025 publication.">
+    <meta name="keywords" content="VideoRAG, adaptive chunking, educational AI, video question answering, bilingual dataset, CSICC 2025">
+    <meta name="author" content="Kianoosh Vadaei">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kia-vadaei.github.io/papers/videorag-adaptive-chunking.html">
+    <meta property="og:title" content="Adaptive Chunking for VideoRAG Pipelines - Kianoosh Vadaei">
+    <meta property="og:description" content="Research paper on adaptive chunking strategies for VideoRAG pipelines using bilingual educational datasets.">
+    <meta property="og:image" content="https://kia-vadaei.github.io/assets/img/pub-videorag.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kia-vadaei.github.io/papers/videorag-adaptive-chunking.html">
+    <meta property="twitter:title" content="Adaptive Chunking for VideoRAG Pipelines - Kianoosh Vadaei">
+    <meta property="twitter:description" content="Research paper on adaptive chunking strategies for VideoRAG pipelines using bilingual educational datasets.">
+    <meta property="twitter:image" content="https://kia-vadaei.github.io/assets/img/pub-videorag.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://kia-vadaei.github.io/papers/videorag-adaptive-chunking.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../logo.png">
+    <link rel="shortcut icon" type="image/png" href="../../logo.png">
+    <link rel="apple-touch-icon" href="../../logo.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    
+    <!-- Additional styles for paper page -->
+    <style>
+        .paper-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .paper-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+            color: var(--accent);
+        }
+        
+        .paper-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-md);
+            flex-wrap: wrap;
+        }
+        
+        .paper-venue {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .paper-year {
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .paper-authors {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .paper-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+        
+        .paper-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .paper-section {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .paper-section h2 {
+            color: var(--accent);
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-xs);
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .paper-section h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            margin-top: var(--space-lg);
+        }
+        
+        .abstract {
+            background: var(--bg-secondary);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .abstract h3 {
+            color: var(--accent);
+            margin-bottom: var(--space-md);
+            margin-top: 0;
+        }
+        
+        .teaser-image {
+            width: 100%;
+            max-width: 600px;
+            margin: var(--space-xl) auto;
+            display: block;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+        
+        .bibtex-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bibtex-modal.active {
+            display: flex;
+        }
+        
+        .bibtex-content {
+            background: var(--bg-secondary);
+            padding: var(--space-xl);
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            margin: var(--space-md);
+        }
+        
+        .bibtex-close {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .bibtex-code {
+            background: var(--bg-primary);
+            padding: var(--space-md);
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin-top: var(--space-md);
+        }
+        
+        .back-to-publications {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .figure-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+            margin: var(--space-xl) 0;
+        }
+        
+        .figure-item {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .figure-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow);
+        }
+        
+        .figure-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .figure-caption {
+            padding: var(--space-md);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .lightbox img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: var(--space-sm);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        
+        .lightbox-prev {
+            left: -60px;
+        }
+        
+        .lightbox-next {
+            right: -60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="../index.html" class="logo">Kianoosh Vadaei</a>
+            <ul class="nav__list">
+                <li><a href="../index.html#about" class="nav__link">About</a></li>
+                <li><a href="../index.html#research" class="nav__link">Research</a></li>
+                <li><a href="../publications.html" class="nav__link">Publications</a></li>
+                <li><a href="../index.html#skills" class="nav__link">Skills</a></li>
+                <li><a href="../index.html#experience" class="nav__link">Experience</a></li>
+                <li><a href="../index.html#contact" class="nav__link">Contact</a></li>
+                <li><a href="../index.html#cv" class="nav__link">CV</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="Toggle theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main">
+        <section class="section">
+            <div class="container">
+                <div class="back-to-publications">
+                    <a href="../publications.html" class="btn btn--secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Publications
+                    </a>
+                </div>
+                
+                <div class="paper-header">
+                    <h1 class="paper-title">Adaptive Chunking for VideoRAG Pipelines with a Newly Gathered Bilingual Educational Dataset</h1>
+                    
+                    <div class="paper-meta">
+                        <div class="paper-venue">CSICC 2025</div>
+                        <div class="paper-year">2025</div>
+                    </div>
+                    
+                    <div class="paper-authors">
+                        Arshia Hemmat, <strong>Kianoosh Vadaei</strong>, Melika Shirian, Mohammad Hassan Heydari, Afsaneh Fatemi
+                    </div>
+                    
+                    <div class="paper-actions">
+                        <a href="#" class="btn" target="_blank" rel="noopener noreferrer">PDF</a>
+                        <button class="btn btn--secondary" onclick="openBibtex()">BibTeX</button>
+                        <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">Dataset: EduViQA</a>
+                        <a href="#" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">Code</a>
+                    </div>
+                </div>
+
+                <div class="paper-content">
+                    <div class="abstract">
+                        <h3>Abstract</h3>
+                        <p>
+                            Video Retrieval-Augmented Generation (VideoRAG) systems have shown promising results in video question answering, 
+                            but their performance heavily depends on effective video segmentation strategies. Traditional fixed-length chunking 
+                            approaches often fail to capture semantic boundaries in educational content, leading to suboptimal retrieval performance. 
+                            In this paper, we present an adaptive chunking strategy specifically designed for VideoRAG pipelines using a newly 
+                            collected bilingual educational dataset (EduViQA). Our approach dynamically segments videos based on content complexity, 
+                            semantic boundaries, and temporal coherence, resulting in improved question-answering accuracy across both English and 
+                            Persian educational videos. We evaluate our method on the EduViQA dataset and demonstrate significant improvements over 
+                            baseline chunking strategies, with particular gains in handling complex educational concepts and cross-lingual scenarios.
+                        </p>
+                    </div>
+
+                    <img src="../assets/img/pub-videorag.png" alt="VideoRAG Pipeline Architecture" class="teaser-image">
+
+                    <div class="paper-section">
+                        <h2>Introduction</h2>
+                        <p>
+                            Educational video content has become increasingly important in modern learning environments, with platforms 
+                            hosting millions of hours of instructional material. However, effectively retrieving relevant information 
+                            from these videos remains a significant challenge, particularly when dealing with long-form content and 
+                            multiple languages.
+                        </p>
+                        <p>
+                            Traditional VideoRAG systems rely on fixed-length temporal segmentation, which often breaks semantic 
+                            coherence and fails to align with natural learning boundaries. This is particularly problematic in 
+                            educational content where concepts are introduced, explained, and reinforced across multiple temporal 
+                            segments.
+                        </p>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Methodology</h2>
+                        <h3>Adaptive Chunking Strategy</h3>
+                        <p>
+                            Our adaptive chunking approach considers multiple factors when determining segment boundaries:
+                        </p>
+                        <ul>
+                            <li><strong>Semantic Coherence:</strong> Analysis of visual and textual content to identify topic transitions</li>
+                            <li><strong>Content Complexity:</strong> Dynamic adjustment based on information density</li>
+                            <li><strong>Temporal Patterns:</strong> Recognition of natural pauses and transitions in educational content</li>
+                            <li><strong>Cross-lingual Alignment:</strong> Synchronization between English and Persian content</li>
+                        </ul>
+
+                        <h3>EduViQA Dataset</h3>
+                        <p>
+                            We introduce EduViQA, a comprehensive bilingual educational dataset containing:
+                        </p>
+                        <ul>
+                            <li>500+ hours of educational videos in English and Persian</li>
+                            <li>10,000+ question-answer pairs across multiple subjects</li>
+                            <li>Detailed temporal annotations and semantic boundaries</li>
+                            <li>Multi-modal content including slides, demonstrations, and explanations</li>
+                        </ul>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Results</h2>
+                        <p>
+                            Our experiments demonstrate significant improvements over baseline methods:
+                        </p>
+                        <ul>
+                            <li><strong>Question Answering Accuracy:</strong> 15.3% improvement over fixed-length chunking</li>
+                            <li><strong>Retrieval Precision:</strong> 22.1% improvement in relevant segment identification</li>
+                            <li><strong>Cross-lingual Performance:</strong> Consistent gains across both English and Persian content</li>
+                            <li><strong>Complex Query Handling:</strong> 18.7% improvement for multi-step reasoning questions</li>
+                        </ul>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Figure Gallery</h2>
+                        <div class="figure-gallery">
+                            <div class="figure-item" onclick="openLightbox(0)">
+                                <img src="../assets/img/pub-videorag.png" alt="VideoRAG Pipeline Architecture">
+                                <div class="figure-caption">
+                                    <strong>Figure 1:</strong> Overview of the adaptive VideoRAG pipeline architecture
+                                </div>
+                            </div>
+                            <div class="figure-item" onclick="openLightbox(1)">
+                                <img src="../assets/img/pub-videorag.png" alt="Chunking Strategy Comparison">
+                                <div class="figure-caption">
+                                    <strong>Figure 2:</strong> Comparison of fixed vs. adaptive chunking strategies
+                                </div>
+                            </div>
+                            <div class="figure-item" onclick="openLightbox(2)">
+                                <img src="../assets/img/pub-videorag.png" alt="Performance Results">
+                                <div class="figure-caption">
+                                    <strong>Figure 3:</strong> Performance comparison across different chunking methods
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paper-section">
+                        <h2>Conclusion</h2>
+                        <p>
+                            This work presents a novel adaptive chunking strategy for VideoRAG systems that significantly improves 
+                            performance on educational content. The introduction of the EduViQA dataset provides a valuable resource 
+                            for future research in educational video understanding and cross-lingual video question answering.
+                        </p>
+                        <p>
+                            Future work will explore the application of our adaptive chunking approach to other domains and investigate 
+                            the integration of additional modalities such as audio and slide content for enhanced semantic understanding.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BibTeX Modal -->
+    <div id="bibtexModal" class="bibtex-modal">
+        <div class="bibtex-content">
+            <button class="bibtex-close" onclick="closeBibtex()">&times;</button>
+            <h3>BibTeX Citation</h3>
+            <div class="bibtex-code">@inproceedings{hemmat2025adaptive,
+  title={Adaptive Chunking for VideoRAG Pipelines with a Newly Gathered Bilingual Educational Dataset},
+  author={Hemmat, Arshia and Vadaei, Kianoosh and Shirian, Melika and Heydari, Mohammad Hassan and Fatemi, Afsaneh},
+  booktitle={Proceedings of the 29th International Computer Conference, Computer Society of Iran (CSICC)},
+  pages={1--12},
+  year={2025},
+  address={Tehran, Iran},
+  organization={Computer Society of Iran}
+}</div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-nav lightbox-prev" onclick="previousImage()">‹</button>
+            <img id="lightboxImage" src="" alt="">
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">›</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <p>&copy; 2025 Kianoosh Vadaei. All rights reserved.</p>
+                <div style="display: flex; align-items: center; gap: var(--space-md);">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                    </button>
+                    <a href="https://github.com/kia-vadaei/kia-vadaei.github.io" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); font-size: 0.9rem;">
+                        View Source
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // BibTeX Modal Functions
+        function openBibtex() {
+            document.getElementById('bibtexModal').classList.add('active');
+        }
+        
+        function closeBibtex() {
+            document.getElementById('bibtexModal').classList.remove('active');
+        }
+        
+        // Lightbox Functions
+        const images = [
+            '../assets/img/pub-videorag.png',
+            '../assets/img/pub-videorag.png',
+            '../assets/img/pub-videorag.png'
+        ];
+        
+        let currentImageIndex = 0;
+        
+        function openLightbox(index) {
+            currentImageIndex = index;
+            document.getElementById('lightboxImage').src = images[index];
+            document.getElementById('lightbox').classList.add('active');
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        
+        function previousImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            document.getElementById('lightboxImage').src = images[currentImageIndex];
+        }
+        
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            document.getElementById('lightboxImage').src = images[currentImageIndex];
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('lightbox').classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') previousImage();
+                if (e.key === 'ArrowRight') nextImage();
+            }
+            if (document.getElementById('bibtexModal').classList.contains('active')) {
+                if (e.key === 'Escape') closeBibtex();
+            }
+        });
+    </script>
+</body>
+</html>
