@@ -79,10 +79,34 @@
           const href = link.getAttribute('href');
           if (href && href.startsWith('#')) {
             e.preventDefault();
-            this.scrollToSection(href.substring(1));
+            const sectionId = href.substring(1);
+            if (sectionId === '' || sectionId === 'main') {
+              // Scroll to top
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+            } else {
+              this.scrollToSection(sectionId);
+            }
           }
         });
       });
+      
+      // Handle logo click to scroll to top
+      const logo = document.querySelector('.logo');
+      if (logo) {
+        logo.addEventListener('click', (e) => {
+          const href = logo.getAttribute('href');
+          if (href === '#' || !href) {
+            e.preventDefault();
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+        });
+      }
 
       // Update active section on scroll
       window.addEventListener('scroll', this.throttle(() => {
@@ -93,11 +117,13 @@
     scrollToSection(sectionId) {
       const section = document.getElementById(sectionId);
       if (section) {
-        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-        const targetPosition = section.offsetTop - headerHeight - 20;
+        const header = document.querySelector('.header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
+        const targetPosition = sectionTop - headerHeight - 20;
         
         window.scrollTo({
-          top: targetPosition,
+          top: Math.max(0, targetPosition),
           behavior: 'smooth'
         });
       }
